@@ -64,7 +64,7 @@ h.clust <- function(data_,method_,k_cut) {
     plot(hc,hang = -1,
           labels=rownames(data_),
           xlab = paste("hclust mathod:",method_),
-          main="HCluster_Dendrogram_data",
+          main = paste("HCluster_Dendrogram_data, k=", k_cut),
           sub = sub_title
          )
 
@@ -166,7 +166,7 @@ StepMLR <- function(data_in,class_,descriptors,ResidualE_analysis=FALSE,verbose 
     
     step.acute <- step(lm.test, direction = "both")
     drop.acute <- drop1(step.acute)
-    #print(summary(step.acute)) #### $coefficients
+    print(summary(step.acute)) #### $coefficients str()
 
     if (verbose) {
         pred_step.acute <- predict(step.acute,newdata=data_in)
@@ -180,9 +180,10 @@ StepMLR <- function(data_in,class_,descriptors,ResidualE_analysis=FALSE,verbose 
     return(step.acute)
 }
 
-StepMLR(data_total,"ld50","des4",FALSE)
-data_1_re <- StepMLR(data_1,"ld50","des4",true,false)
-AIC(data_1_re) # calc the 赤池信息统计量
+StepMLR(data_total,"ld50","des4",FALSE,TRUE)
+data_1_lm <- StepMLR(data_1,"ld50","des4",,)
+AIC(data_1_lm) # calc the 赤池信息统计量
+shapiro.test(data_1_lm$residuals) # normality test for residuals
 
 data_2_re <- StepMLR(data_2,"ld50","des4",,)
 ### 20130917,xwang
