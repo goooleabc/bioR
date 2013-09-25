@@ -1,11 +1,11 @@
- author: xyw
- date: 2013.09.23
- For xyw's google program
+ author: xyw  
+ date: 2013.09.23  
+ For xyw's google program  
 # Cygwin workshop in Windows
 -----------------------
 * install the latest version of Cygwin.  
 > + select the default base packages  
-> + select your nice editor packages: mc, vim.  
+> + select your nice editor packages: mc, vim, lynx,R  
 > + select git core paceages
 
 
