@@ -14,4 +14,16 @@
   The Git-1.8.1.2-preview20130201.exe is not good at fitting for Cygwin_NI-5.1.  
 
 That's all.
+---------------------------
+# git cmds
+ # .26
+git clone url/repo.git myrepo
+git remote add origin url/repo.git
+ # some modifications in origin
+git fetch origin
+git diff origin
+git log -p master..origin
+git merge origin
+
+
 

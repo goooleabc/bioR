@@ -1,5 +1,8 @@
-#数据预处理
-#判断包是否存在，不存在则安装
+
+# 数据预处理
+ # author: xyw
+------------------------------
+# 判断包是否存在，不存在则安装
 load.lib <- function(package_name) {
     pkg <- length( grep(package_name,library()) ) >0;
     if ( !pkg ) {

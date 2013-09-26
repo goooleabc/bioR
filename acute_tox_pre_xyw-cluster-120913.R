@@ -6,6 +6,10 @@
 library('caret')
 library('MASS')
 library('pls')
+## packages("fBasics") for normal test
+## install.packages("fBasics")
+library(fBasics)
+
  # acuteData <- read.table(file = file.choose(), sep="\t", header=TRUE)
 acuteData <- read.table("F:\\work\\tox_predict\\acutetoxicity_LD50_QSAR_Analysis\\20121114_compounds_acutetoxicity\\322_compounds_Mold2_descripters.txt",
                       sep="\t",header=TRUE)
@@ -17,9 +21,46 @@ head(names(acuteData))
 acuteDes <- acuteData[,-1]
 acuteCla <- acuteData[,1]
 
+# Explore Individual Variables 
+summary(acuteCla)
+quantile(acuteCla)
+quantile(acuteCla,c(.1, .2, .5, .8, 1))
+var(acuteCla)
+
+plot(density(acuteCla))
+table(acuteCla)
+pie(table(acuteCla))
+barplot(table(acuteCla))
+
+## Normal curve fitting  
+FitNormalCurve <- function(list, xlabel="values") {
+    ### to display every image until you close it 
+    x11()  
+    ### F, is short for FALSE.
+    hist(list, freq = F, 
+        ### probability	an alias for !freq, for S compatibility.
+        probability=,
+        xlab = xlabel, 
+        ### 标题中显示均值
+        main = paste('样本的均数：', mean(list), ' ') 
+        )
+      ### Kernel Density Estimation
+      lines(density(list))
+      ### Normal curve fitting 
+      ### lwd, line's width
+      curve(dnorm(x, mean(list), sd(list)), 
+            col='red', add=T,  lwd=1)
+    shapiroTest(list)
+}
+
  ## convert to -logld50
 acuteCla <- -acuteCla
 acuteCla <- log10(acuteData[,1]*1000)
+
+
+FitNormalCurve(acuteCla,"acuteCla")
+
+
 
  # remove spare avariables
 zerovar = nearZeroVar(acuteDes)

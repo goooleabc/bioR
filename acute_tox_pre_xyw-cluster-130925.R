@@ -41,8 +41,10 @@ FitNormalCurve <- function(list, xlabel="values") {
         ### probability	an alias for !freq, for S compatibility.
         probability=,
         xlab = xlabel, 
+        ### set the values range of x axis 
+        xlim = c(ceiling(min(list)),ceiling(max(list))),
         ### 标题中显示均值
-        main = paste('样本的均数：', mean(list), ' ') 
+        main = paste('样本的均数：', round(mean(list),2), ' ') 
         )
       ### Kernel Density Estimation
       lines(density(list))
@@ -53,14 +55,17 @@ FitNormalCurve <- function(list, xlabel="values") {
     shapiroTest(list)
 }
 
+if (FALSE) {
  ## convert to -logld50
 acuteCla <- -acuteCla
 acuteCla <- log10(acuteData[,1]*1000)
-
-
+}
+ # CONVERT TO LOG(1/(mg/kg))
+acuteCla <- acuteCla*1000 # kg/kg to mg/kg
+acuteCla <- log(acuteCla, base = exp(1))
+summary(acuteCla)
 FitNormalCurve(acuteCla,"acuteCla")
-
-
+intger(min(acuteCla))
 
  # remove spare avariables
 zerovar = nearZeroVar(acuteDes)
