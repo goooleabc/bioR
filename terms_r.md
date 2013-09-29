@@ -2,11 +2,20 @@
  # author: xyw
 ---------------------------
 ## terms
+
+### Univariate Outlier Detection
+  单变量的离群值检测. You can use boxplot.stats function in R.  
+
+### Heirarchical Agglomerative
+分层聚类。(update:2013.09.27)  
+Ward Heirarchical Clustering is a kind of them.  
+
 ### data transfer
-数据转换 (update:2013.09.25)
-（1）剔除某些表现“特殊”的观察值、处理或重复。
-（2）将总的试验误差的方差分裂为几个较为同质的试验误差的方差。
-（3）针对数据的主要缺陷，采用相应的变数转换；然后用转换后的数据作方差分析。常用的转换方法有：
+数据转换 (update:2013.09.25)  
+（1）剔除某些表现“特殊”的观察值、处理或重复。  
+（2）将总的试验误差的方差分裂为几个较为同质的试验误差的方差。  
+（3）针对数据的主要缺陷，采用相应的变数转换；然后用转换后的数据作方差分析。  
+常用的转换方法有：
 #### 平方根转换(square root transformation)
 	如果样本平均数与其方差有比例关系，如poisson分布那样， ，这种资料用平方根转换是有效的。
 

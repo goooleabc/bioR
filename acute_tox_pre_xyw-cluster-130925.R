@@ -8,6 +8,8 @@ library('MASS')
 library('pls')
 ## packages("fBasics") for normal test
 ## install.packages("fBasics")
+install.packages('DMwR')
+library('DMwR')
 library(fBasics)
 
  # acuteData <- read.table(file = file.choose(), sep="\t", header=TRUE)
@@ -60,12 +62,35 @@ if (FALSE) {
 acuteCla <- -acuteCla
 acuteCla <- log10(acuteData[,1]*1000)
 }
+
  # CONVERT TO LOG(1/(mg/kg))
-acuteCla <- acuteCla*1000 # kg/kg to mg/kg
-acuteCla <- log(acuteCla, base = exp(1))
+acuteCla_unit <- acuteCla*1000 # kg/kg to mg/kg
+ # find the outliers 
+if (FALSE) { # Univariate Outlier Detection
+names(acuteCla_unit) <- 1:332
+outliers_v <- boxplot.stats(acuteCla_unit)$out
+boxplot(acuteCla_unit)
+outliers <- names(acuteCla_unit[acuteCla_unit %in% outliers_v ])
+outliers <- as.numeric(outliers)
+}
+
+outlier.scores <- lofactor(acuteDes, k=15)
+plot(density(outlier.scores))
+outliers <- order(outlier.scores, decreasing=T)[1:20]
+outliers 
+
+str(acuteDes)
+acuteCla <- acuteCla_unit[-outliers]
+acuteDes <- acuteDes[-outliers,]
+
+str(acuteDes )
+
+
+# acuteCla <- log(acuteCla, base = exp(1))
+acuteCla <- log(acuteCla, base = exp(10))
 summary(acuteCla)
-FitNormalCurve(acuteCla,"acuteCla")
-intger(min(acuteCla))
+FitNormalCurve(acuteCla,"lg(LD50)")
+
 
  # remove spare avariables
 zerovar = nearZeroVar(acuteDes)
@@ -130,6 +155,7 @@ if (FALSE) {
     h.clust(acuteDes4,"centroid",10)
 }
 groups <- h.clust(acuteDes4,"ward",2)
+rownames(acuteDes4)
 names(groups)
 groups
 groups <- as.matrix(groups)
@@ -138,31 +164,33 @@ summary(groups)
 table(groups)
 pie(table(groups))
 
-----------------------
+# ----------------------
 ### create 2 classes of data_frame 
 acuteDes4 <- as.matrix(acuteDes4)
 str(acuteDes4)
+str(acuteCla)
 total_data <- data.frame("class"=groups[,1],"acuteCla"=acuteCla,"acuteDes4"=I(acuteDes4))
 str(total_data)
 data_1_flag <- total_data$class == 1
 data_1_flag
-data_1_id <- c(1:332)[data_1_flag]
+data_1_id <- c(1:312)[data_1_flag]
 data_1_id
 data_1 <- data.frame("ld50"=total_data$acuteCla[data_1_id]
-                    ,"des4"=total_data$acuteDes4[data_1_id,])
+                    ,"des4"=I(total_data$acuteDes4[data_1_id,]))
 str(data_1)
 data_1$ld50
 ###　make sure data frame well
 data_1[1:2,]
 total_data[c(1,3),]
 
-data_2_id <- c(1:332)[!data_1_flag]
+data_2_id <- c(1:312)[!data_1_flag]
 data_2 <- data.frame("ld50"=total_data$acuteCla[data_2_id]
                     ,"des4"=total_data$acuteDes4[data_2_id,])
 str(data_2)
 data_total <-  data.frame("ld50" = acuteCla, "des4" = I(acuteDes4))
+str(data_total )
 
-
+if (FALSE) {
  ## old codes followed
  ### creat data_frame for modeling
 acuteDes4 <- as.matrix(acuteDes4)
@@ -170,6 +198,7 @@ str(acuteDes4)
 testdata <- data.frame("acuteCla"=acuteCla,"acuteDes4"=I(acuteDes4))
 str(testdata)
  ## old codes upper
+}
 
 ## 残差分析说明
 ### Residual_Error_Analysis_Meaning
@@ -226,7 +255,7 @@ StepMLR <- function(data_in,class_,descriptors,ResidualE_analysis=FALSE,verbose 
     return(step.acute)
 }
 
-StepMLR(data_total,"ld50","des4",FALSE,TRUE)
+StepMLR(data_total,"ld50","des4",,TRUE)
 data_1_lm <- StepMLR(data_1,"ld50","des4",,)
 AIC(data_1_lm) # calc the 赤池信息统计量
 shapiro.test(data_1_lm$residuals) # normality test for residuals
